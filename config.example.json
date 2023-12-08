@@ -1,0 +1,8 @@
+{
+  "chains": [],
+  "globalConfig": {
+    "digirpc": "http://127.0.0.1:8000/",
+    "dbPath": "crossweaver.db",
+    "ethPrivateKey": ""
+  }
+}
