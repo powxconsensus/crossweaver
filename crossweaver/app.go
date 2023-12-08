@@ -23,7 +23,7 @@ var CoreFlags = []cli.Flag{
 
 var CoremodeCommand = cli.Command{
 	Name:  "start",
-	Usage: "Runs Crossweaver ",
+	Usage: "Runs Router crossweaver ",
 	Description: "The start command is used to run crossweaver in Core Mode.\n" +
 		"\tThe crossweaver directly talks to the Router chain\n" +
 		"\tThe crossweaver will sign all incomming transaction\n" +
