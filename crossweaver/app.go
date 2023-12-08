@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/digilabs/crossweaver/config"
 	"github.com/urfave/cli/v2"
 )
 
@@ -10,6 +11,16 @@ var (
 	Version = "0.0.1"
 )
 
+// Core Mode Flags
+var CoreFlags = []cli.Flag{
+	config.ConfigFileFlag,
+	config.VerbosityFlag,
+	config.ResetFlag,
+	config.LatestBlockFlag,
+	config.MetricsFlag,
+	config.MetricsPort,
+}
+
 var CoremodeCommand = cli.Command{
 	Name:  "start",
 	Usage: "Runs Crossweaver ",
@@ -17,6 +28,8 @@ var CoremodeCommand = cli.Command{
 		"\tThe crossweaver directly talks to the Router chain\n" +
 		"\tThe crossweaver will sign all incomming transaction\n" +
 		"\tThe crossweaver can listen to various chains",
+	Action: run,
+	Flags:  CoreFlags,
 }
 
 func init() {

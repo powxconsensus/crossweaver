@@ -7,6 +7,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"github.com/urfave/cli"
 )
 
 func main() {
@@ -26,4 +27,8 @@ func main() {
 	///////// WAIT FOR QUIT MESSAGE //////
 	//////////////////////////////////////
 	<-quitChannel
+}
+
+func run(cliContext *cli.Context) error {
+	return nil
 }
