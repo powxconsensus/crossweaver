@@ -23,7 +23,7 @@ type CrossChainRequest struct {
 	Payload    string      `json:"payload"`
 	Sigs       []Signature `json:"sigs"`
 	SrcChainId string      `json:"src_chain_id"`
-	SrcNonce   *big.Int    `json:"src_nonce"`
+	SrcNonce   string      `json:"src_nonce"`
 	DstChainId string      `json:"dst_chain_id"`
 }
 type CrossChainRequestsResponse struct {

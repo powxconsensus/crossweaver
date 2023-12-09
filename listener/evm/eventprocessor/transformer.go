@@ -30,7 +30,6 @@ func (e *EvmEventProcessor) TransformLockedEvent(lockedEvents *types.DigiPayLock
 		lockedEvents.Raw.BlockNumber,
 		lockedEvents.Raw.TxHash.String(),
 	)
-	fmt.Println("rmsg: ", rmsg)
 	data, err := rmsg.GetMsgPacket()
 	if err != nil {
 		e.logger.WithFields(log.Fields{"error": err}).Fatalf("While getting msg packet")

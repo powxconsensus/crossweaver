@@ -24,11 +24,19 @@ func (ct *ChainTransmitter) HandleRequest(m *digichain.CrossChainRequest) error 
 		return err
 	}
 	// check if this msg is already executed or not?
-	excutedArgs, err := methods.Executed.GetAbiPackBytes(labi.DIGIPAY_ABI, m.SrcNonce) // src_nonce is nonce on digichain
+	var tnonce big.Int
+	src_nonce, _ := tnonce.SetString(m.SrcNonce, 10)
+	excutedArgs, err := methods.Executed.GetAbiPackBytes(labi.DIGIPAY_ABI, src_nonce) // src_nonce is nonce on digichain
 	res, err := ct.gateway.CallContract(excutedArgs)
-	fmt.Println(res)
-	panic("sss")
-
+	if err != nil {
+		ct.log.WithFields(logrus.Fields{"Error": err}).Error("Error fetching if tx already executed or not")
+		return err
+	}
+	executed := new(big.Int).SetBytes(res).Sign() != 0
+	if executed {
+		ct.log.WithFields(logrus.Fields{"Error": err, "Id": id}).Error("Already Executed")
+		return err
+	}
 	payload, err := hex.DecodeString(utils.Remove0xPrefix(m.Payload))
 	if err != nil {
 		ct.log.WithFields(logrus.Fields{"Error": err}).Error("Error while decoding payload")
@@ -38,7 +46,7 @@ func (ct *ChainTransmitter) HandleRequest(m *digichain.CrossChainRequest) error 
 	for idx := 0; idx < len(m.Sigs); idx++ {
 		sigs[idx], _ = m.Sigs[idx].ToHex()
 	}
-	argsData, err := methods.HandleRequest.GetAbiPackBytes(labi.DIGIPAY_ABI, m.SrcChainId, m.DstChainId, m.SrcNonce, payload, sigs)
+	argsData, err := methods.HandleRequest.GetAbiPackBytes(labi.DIGIPAY_ABI, m.SrcChainId, m.DstChainId, src_nonce, payload, sigs)
 	if err != nil {
 		ct.log.Fatalf("Failed to pack input data: %v", err)
 	}
