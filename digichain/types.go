@@ -69,7 +69,7 @@ type GetCrossChainRequest struct {
 type IsCrossChainRequestBroadcasted struct {
 	Validator     common.Address `json:"validator"`
 	SrcChainId    string         `json:"src_chain_id"`
-	SrcChainNonce uint64         `json:"src_nonce"`
+	SrcChainNonce string         `json:"src_nonce"`
 }
 
 type GetAccountParams struct {
@@ -104,7 +104,7 @@ type Transaction struct {
 	CreatedAt uint64         `json:"created_at"`
 	Type      string         `json:"tx_type"`
 	From      common.Address `json:"from"`
-	Nonce     uint64         `json:"nonce"`
+	Nonce     string         `json:"nonce"`
 	Signature Signature      `json:"signature"`
 }
 

@@ -3,7 +3,6 @@ package digichain
 import (
 	"encoding/json"
 	"fmt"
-	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -11,8 +10,8 @@ import (
 type AccountRes struct {
 	Account struct {
 		Address        common.Address `json:"address"`
-		TxNonce        *big.Int       `json:"tx_nonce"`
-		ProposalNonce  *big.Int       `json:"proposal_nonce"`
+		TxNonce        string         `json:"tx_nonce"`
+		ProposalNonce  string         `json:"proposal_nonce"`
 		IsKYCDone      bool           `json:"is_kyc_done"`
 		Name           string         `json:"name"`
 		Country        string         `json:"country"`

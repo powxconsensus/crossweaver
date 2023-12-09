@@ -15,6 +15,8 @@ func (d *DigiChainClient) BroadcastTx(msg RawProposal) (*TxResponse, error) {
 	if err != nil {
 		return nil, err
 	}
+	var bn big.Int
+	txNonce, _ := bn.SetString(account.Account.TxNonce, 10)
 	cp := BroadcastTxParams{
 		Transaction: Transaction{
 			Data:      string(msg.data),
@@ -23,7 +25,7 @@ func (d *DigiChainClient) BroadcastTx(msg RawProposal) (*TxResponse, error) {
 			CreatedAt: msg.proposed_at,
 			Type:      msg.proposal_type,
 			From:      msg.proposed_by,
-			Nonce:     account.Account.TxNonce.Add(account.Account.TxNonce, big.NewInt(1)).Uint64(),
+			Nonce:     txNonce.Add(txNonce, big.NewInt(1)).String(),
 			Signature: msg.signature,
 		},
 	}

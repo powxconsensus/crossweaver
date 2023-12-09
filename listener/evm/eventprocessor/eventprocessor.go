@@ -48,7 +48,6 @@ func NewEvmEventProcessor(chainSpec config.ChainSpecs, digiChainClient digichain
 func (e EvmEventProcessor) ProcessInboundEvents(lastQueriedBlock uint64, lastProcessedEventNonce uint64) error {
 	e.logger.Info("Block Fetching started")
 	for {
-		fmt.Println(lastQueriedBlock)
 		////////////////////////////////////////////////////////////
 		/////// 1. FETCH EVENTS FROM SOURCE CHAIN 	////////////////
 		/////// 2. TRANSFORM EVENTS TO ROUTERCHAIN SDK.MSG /////////
@@ -135,71 +134,71 @@ func (e EvmEventProcessor) SortAndTransformInboundEventsByEventNonce(
 		var msg digichain.RawProposal
 		var err error
 		if i < len(lockedEvents) {
-			if lockedEvents[i].Nonce.Uint64() <= lastProcessedEventNonce {
-				// It's already processed. skip processing again.
-				i++
-			} else if lockedEvents[i].Nonce.Uint64() == lastProcessedEventNonce+1 {
-				////////////////////////////////////////////////
-				///// 1. Transform RequestToRouterEvent ////////
-				////////////////////////////////////////////////
-				msg, err = e.TransformLockedEvent(lockedEvents[i])
-				if err != nil {
-					return 0, err
-				}
-				lastProcessedEventNonce = lockedEvents[i].Nonce.Uint64()
-				// Can Be Optimized
-				ires, err := e.digiChainClient.IsCrosschainRequestBroadcasted(e.from, lockedEvents[i].SrcChainId, lockedEvents[i].Nonce)
-				i++
-				if err != nil {
-					e.logger.WithFields(log.Fields{"error": err}).Error("Error While Fetching IsCrosschainRequestBroadcasted")
-					continue
-				}
-				if ires {
-					e.logger.WithFields(log.Fields{"error": err}).Error("Tx Already Broadcasted")
-					continue
-				}
-				// directly signing and broadcasting
-				res, error := e.digiChainClient.SignRawTxAndBroadCast(msg)
-				if error != nil {
-					e.logger.WithFields(log.Fields{"error": error}).Error("LockedEvent: Error While Broadcasting tx")
-					continue
-				}
-				e.logger.WithFields(log.Fields{"tx_hash": res.Data.TxHash}).Debug("LockedEvent: Broadcasted Tx")
+			// if lockedEvents[i].Nonce.Uint64() <= lastProcessedEventNonce {
+			// 	// It's already processed. skip processing again.
+			// 	i++
+			// } else if lockedEvents[i].Nonce.Uint64() == lastProcessedEventNonce+1 {
+			////////////////////////////////////////////////
+			///// 1. Transform RequestToRouterEvent ////////
+			////////////////////////////////////////////////
+			msg, err = e.TransformLockedEvent(lockedEvents[i])
+			if err != nil {
+				return 0, err
 			}
+			lastProcessedEventNonce = lockedEvents[i].Nonce.Uint64()
+			// Can Be Optimized
+			ires, err := e.digiChainClient.IsCrosschainRequestBroadcasted(e.from, lockedEvents[i].SrcChainId, lockedEvents[i].Nonce)
+			i++
+			if err != nil {
+				e.logger.WithFields(log.Fields{"error": err}).Error("Error While Fetching IsCrosschainRequestBroadcasted")
+				continue
+			}
+			if ires {
+				e.logger.WithFields(log.Fields{"error": err}).Error("Tx Already Broadcasted")
+				continue
+			}
+			// directly signing and broadcasting
+			res, error := e.digiChainClient.SignRawTxAndBroadCast(msg)
+			if error != nil {
+				e.logger.WithFields(log.Fields{"error": error}).Error("LockedEvent: Error While Broadcasting tx")
+				continue
+			}
+			e.logger.WithFields(log.Fields{"tx_hash": res.Data.TxHash}).Debug("LockedEvent: Broadcasted Tx")
+			// }
 		}
 
 		if j < len(unlockedEvents) {
-			if unlockedEvents[j].Nonce.Uint64() <= lastProcessedEventNonce {
-				// It's already processed. skip processing again.
-				j++
-			} else if unlockedEvents[j].Nonce.Uint64() == lastProcessedEventNonce+1 {
-				////////////////////////////////////////////////
-				///// 2. Transform ValsetUpdatedEvent //////////
-				////////////////////////////////////////////////
-				msg, err = e.TransformUnLockedEvent(unlockedEvents[j])
-				if err != nil {
-					return 0, err
-				}
-				lastProcessedEventNonce = unlockedEvents[j].Nonce.Uint64()
-				// Can Be Optimized
-				ires, err := e.digiChainClient.IsCrosschainRequestBroadcasted(e.from, unlockedEvents[j].DstChainId, unlockedEvents[j].Nonce)
-				if err != nil {
-					e.logger.WithFields(log.Fields{"error": err}).Error("Error While Fetching IsCrosschainRequestBroadcasted")
-					continue
-				}
-				if ires {
-					e.logger.WithFields(log.Fields{"error": err}).Error("Tx Already Broadcasted")
-					continue
-				}
-				j++
-				res, error := e.digiChainClient.SignRawTxAndBroadCast(msg)
-				if error != nil {
-					e.logger.WithFields(log.Fields{"error": error}).Error("UnlockedEvent: Error While Broadcasting tx")
-					continue
-				}
-				e.logger.WithFields(log.Fields{"tx_hash": res.Data.TxHash}).Debug("UnlockedEvent: Broadcasted Tx")
+			// if unlockedEvents[j].Nonce.Uint64() <= lastProcessedEventNonce {
+			// 	// It's already processed. skip processing again.
+			// 	j++
+			// } else if unlockedEvents[j].Nonce.Uint64() == lastProcessedEventNonce+1 {
+			////////////////////////////////////////////////
+			///// 2. Transform ValsetUpdatedEvent //////////
+			////////////////////////////////////////////////
+			msg, err = e.TransformUnLockedEvent(unlockedEvents[j])
+			if err != nil {
+				return 0, err
 			}
+			lastProcessedEventNonce = unlockedEvents[j].Nonce.Uint64()
+			// Can Be Optimized
+			ires, err := e.digiChainClient.IsCrosschainRequestBroadcasted(e.from, unlockedEvents[j].DstChainId, unlockedEvents[j].Nonce)
+			if err != nil {
+				e.logger.WithFields(log.Fields{"error": err}).Error("Error While Fetching IsCrosschainRequestBroadcasted")
+				continue
+			}
+			if ires {
+				e.logger.WithFields(log.Fields{"error": err}).Error("Tx Already Broadcasted")
+				continue
+			}
+			j++
+			res, error := e.digiChainClient.SignRawTxAndBroadCast(msg)
+			if error != nil {
+				e.logger.WithFields(log.Fields{"error": error}).Error("UnlockedEvent: Error While Broadcasting tx")
+				continue
+			}
+			e.logger.WithFields(log.Fields{"tx_hash": res.Data.TxHash}).Debug("UnlockedEvent: Broadcasted Tx")
 		}
+		// }
 		count = count + 1
 	}
 	return lastProcessedEventNonce, nil

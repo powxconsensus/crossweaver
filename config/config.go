@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/digilabs/crossweaver/digichain"
@@ -138,13 +139,17 @@ func (c *Config) FetchSpecs(digiChainClient digichain.DigiChainClient) error {
 		logrus.WithFields(logrus.Fields{"error": err}).Error("Error in Fetching values from router client ")
 	}
 	for chainId, v1 := range config.Configs {
+		lnonce, err := strconv.ParseUint(v1.LastProcessedNonce, 10, 64)
+		if err != nil {
+			continue
+		}
 		for _, v2 := range c.Chains {
 			if chainId == v2.ChainId {
 				Cx := ChainSpecs{
 					ChainId:                 chainId,
 					ChainName:               v2.ChainName,
 					ChainType:               types.EVM_CHAIN, //TODO: hardcoded to evm only
-					LastObservedValsetNonce: uint64(v1.LastProcessedNonce),
+					LastObservedValsetNonce: lnonce,
 					StartBlock:              uint64(v1.StartBlock),
 					ChainRpc:                v2.ChainRpc,
 					From:                    v2.From,

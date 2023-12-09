@@ -12,7 +12,7 @@ type ContractConfig struct {
 	Configs map[string]struct {
 		ChainType          int    `json:"chain_type"`
 		ContractAddress    string `json:"contract_address"`
-		LastProcessedNonce int    `json:"last_proccessed_nonce"`
+		LastProcessedNonce string `json:"last_proccessed_nonce"`
 		LastProcessedBlock int    `json:"last_processed_block"`
 		StartBlock         int    `json:"start_block"`
 	} `json:"configs"`
@@ -84,7 +84,7 @@ func (dc *DigiChainClient) IsCrosschainRequestBroadcasted(validator common.Addre
 	cp := IsCrossChainRequestBroadcasted{
 		Validator:     validator,
 		SrcChainId:    srcChainId,
-		SrcChainNonce: srcNonce.Uint64(),
+		SrcChainNonce: srcNonce.String(),
 	}
 	rq := dc.NewRequestBody("is_broadcasted", cp)
 	jsonData, err := json.Marshal(rq)
