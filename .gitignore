@@ -1,0 +1,7 @@
+.chain_cookie
+crossweaver-binary
+config.json
+forwarder.db
+.env
+
+crossweaver.db

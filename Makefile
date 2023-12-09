@@ -1,4 +1,4 @@
-BINARY_NAME=crossweaver-binay
+BINARY_NAME=crossweaver-binary
 CONFIG="./config.json"
 LOG_LEVEL=info
 METRICS=true
